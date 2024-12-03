@@ -43,3 +43,15 @@ export const userRegistrationValidation = [
 
   handleValidationError,
 ] as any;
+
+export const userUpdateValidation = [
+  body("password")
+    .isString()
+    .withMessage("Password must be a string.")
+    .isLength({ max: 10 })
+    .withMessage("Password must be between 10 characters.")
+    .notEmpty()
+    .withMessage("Password is required."),
+
+  handleValidationError,
+] as any;

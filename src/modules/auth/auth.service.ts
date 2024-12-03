@@ -110,7 +110,6 @@ const userLogin = async (req: Request, res: Response): Promise<any> => {
       access_token: access_token,
     });
   } catch (error) {
-    console.error("Error during login:", error);
     return res.status(500).json({
       status: "error",
       message: "An error occurred while logging in",
