@@ -1,7 +1,10 @@
 import express from "express";
 import userService from "./user.service";
 import { VerifyJwt } from "../../middlewares/jwt-token";
-import { userUpdateValidation } from "../../middlewares/handleValidation";
+import {
+  singleUserDetailsValidation,
+  userUpdateValidation,
+} from "../../middlewares/handleValidation";
 
 const router = express.Router();
 
@@ -11,6 +14,12 @@ router.put(
   userUpdateValidation,
   VerifyJwt,
   userService.updateUserProfile
+);
+router.get(
+  "/profile/:id",
+  singleUserDetailsValidation,
+  VerifyJwt,
+  userService.getSingleUserDetails
 );
 
 export default router;

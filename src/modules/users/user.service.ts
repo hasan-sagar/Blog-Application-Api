@@ -61,4 +61,45 @@ const updateUserProfile = async (req: Request, res: Response): Promise<any> => {
   }
 };
 
-export default { getLoggedInUser, updateUserProfile };
+//get a user
+const getSingleUserDetails = async (
+  req: Request,
+  res: Response
+): Promise<any> => {
+  try {
+    //param id
+    const userId = req.params.id;
+
+    if (!userId) {
+      return res.status(404).json({
+        status: "error",
+        message: "Id not found",
+      });
+    }
+
+    //get user details
+    const user: UserModel[] =
+      await prisma.$queryRaw`SELECT id,name,email FROM user WHERE id = ${userId}`;
+
+    if (!user) {
+      return res.status(404).json({
+        status: "error",
+        message: "User not found",
+      });
+    }
+
+    return res.status(200).json({
+      status: "success",
+      data: user,
+    });
+  } catch (error) {
+    console.log(error);
+
+    return res.status(500).json({
+      status: "error",
+      message: "Server Error Try Again",
+    });
+  }
+};
+
+export default { getLoggedInUser, updateUserProfile, getSingleUserDetails };

@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { body, validationResult } from "express-validator";
+import { body, param, validationResult } from "express-validator";
 
 // Middleware to handle validation errors
 const handleValidationError = (
@@ -53,5 +53,14 @@ export const userUpdateValidation = [
     .notEmpty()
     .withMessage("Password is required."),
 
+  handleValidationError,
+] as any;
+
+export const singleUserDetailsValidation = [
+  param("id")
+    .isNumeric()
+    .withMessage("Id must be a number")
+    .notEmpty()
+    .withMessage("Id is required"),
   handleValidationError,
 ] as any;

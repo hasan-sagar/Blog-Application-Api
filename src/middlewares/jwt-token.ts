@@ -38,7 +38,7 @@ export const VerifyJwt = async (
   try {
     const authHeader = req.headers.authorization;
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
-      return res.status(401).json({ message: "Unauthorized" });
+      return res.status(401).json({ status: "error", message: "Unauthorized" });
     }
 
     const token = authHeader.split(" ")[1];
