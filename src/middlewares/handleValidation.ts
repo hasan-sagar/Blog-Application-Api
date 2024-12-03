@@ -64,3 +64,29 @@ export const singleUserDetailsValidation = [
     .withMessage("Id is required"),
   handleValidationError,
 ] as any;
+
+export const createBlogValidation = [
+  body("title")
+    .isString()
+    .withMessage("Title must be string")
+    .isLength({ max: 255 })
+    .withMessage("Title length max 255 character")
+    .notEmpty()
+    .withMessage("Title required"),
+  body("content")
+    .isString()
+    .withMessage("Content Text Post")
+    .notEmpty()
+    .withMessage("Content required"),
+  body("tags")
+    .isArray()
+    .withMessage("Tags must be an array")
+    .custom((value) => {
+      if (value.length === 0) {
+        throw new Error("Tags cannot be an empty array");
+      }
+      return true;
+    })
+    .withMessage("Tags required"),
+  handleValidationError,
+] as any;
