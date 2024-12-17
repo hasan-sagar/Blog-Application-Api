@@ -1,6 +1,6 @@
 import express, { Request, Response } from "express";
 import "dotenv/config";
-import authRouter from "../src/modules/auth/auth..route";
+import authRouter from "./modules/auth/auth.route";
 import userRouter from "../src/modules/users/user.route";
 import blogRouter from "../src/modules/blogs/blogs.route";
 

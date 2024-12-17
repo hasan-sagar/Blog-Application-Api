@@ -1,5 +1,5 @@
 import express from "express";
-import authService from "../auth/auth.service";
+import authService from "./auth.service";
 import { userRegistrationValidation } from "../../middlewares/handleValidation";
 
 const router = express.Router();
