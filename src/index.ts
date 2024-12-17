@@ -1,8 +1,8 @@
 import express, { Request, Response } from "express";
 import "dotenv/config";
 import authRouter from "./modules/auth/auth.route";
-import userRouter from "../src/modules/users/user.route";
-import blogRouter from "../src/modules/blogs/blogs.route";
+import userRouter from "./modules/users/user.route";
+import blogRouter from "./modules/blogs/blogs.route";
 
 const app = express();
 app.use(express.json());
