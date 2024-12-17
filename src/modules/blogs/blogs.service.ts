@@ -68,18 +68,63 @@ const createBlog = async (req: Request, res: Response): Promise<any> => {
 };
 
 //get all blogs
+// const getAllBlogs = async (req: Request, res: Response): Promise<any> => {
+//   try {
+//     const getBlogs: BlogFetchModel[] = await prisma.$queryRaw`
+//       SELECT
+//         blogs.id AS id,
+//         blogs.title,
+//         blogs.content,
+//         GROUP_CONCAT(tags.tag_name) AS tags
+//         FROM blogs
+//         LEFT JOIN blog_tags ON blogs.id = blog_tags.blog_id
+//         LEFT JOIN tags ON blog_tags.tag_id = tags.id
+//         GROUP BY blogs.id, blogs.title, blogs.content
+//     `;
+
+//     const blogs = getBlogs.map((blog: BlogFetchModel) => ({
+//       id: blog.id,
+//       title: blog.title,
+//       content: blog.content,
+//       tags: blog.tags ? blog.tags.split(",") : [],
+//     }));
+
+//     return res.status(200).json({
+//       status: "success",
+//       data: blogs,
+//     });
+//   } catch (error) {
+//     return res.status(500).json({
+//       status: "error",
+//       message: "Error fetching blogs. Try again.",
+//     });
+//   }
+// };
+
+// get all blogs
 const getAllBlogs = async (req: Request, res: Response): Promise<any> => {
   try {
+    const page: number = parseInt(req.query.page as string) || 1;
+    const pageSize: number = parseInt(req.query.pageSize as string) || 10;
+    const offset: number = (page - 1) * pageSize;
+
+    const totalBlogsResult: any = await prisma.$queryRaw`
+      SELECT COUNT(*) AS count FROM blogs
+    `;
+
+    const totalBlogs = Number(totalBlogsResult[0].count);
+
     const getBlogs: BlogFetchModel[] = await prisma.$queryRaw`
       SELECT 
         blogs.id AS id,
         blogs.title,
         blogs.content,
         GROUP_CONCAT(tags.tag_name) AS tags
-        FROM blogs
-        LEFT JOIN blog_tags ON blogs.id = blog_tags.blog_id
-        LEFT JOIN tags ON blog_tags.tag_id = tags.id
-        GROUP BY blogs.id, blogs.title, blogs.content
+      FROM blogs
+      LEFT JOIN blog_tags ON blogs.id = blog_tags.blog_id
+      LEFT JOIN tags ON blog_tags.tag_id = tags.id
+      GROUP BY blogs.id, blogs.title, blogs.content
+      LIMIT ${pageSize} OFFSET ${offset}
     `;
 
     const blogs = getBlogs.map((blog: BlogFetchModel) => ({
@@ -89,11 +134,20 @@ const getAllBlogs = async (req: Request, res: Response): Promise<any> => {
       tags: blog.tags ? blog.tags.split(",") : [],
     }));
 
+    const totalPages = Math.ceil(totalBlogs / pageSize);
+
     return res.status(200).json({
       status: "success",
       data: blogs,
+      pagination: {
+        currentPage: page,
+        pageSize: pageSize,
+        totalBlogs: totalBlogs,
+        totalPages: totalPages,
+      },
     });
   } catch (error) {
+    console.error(error);
     return res.status(500).json({
       status: "error",
       message: "Error fetching blogs. Try again.",
@@ -252,6 +306,69 @@ const updateBlog = async (req: Request, res: Response): Promise<any> => {
   }
 };
 
+//search blogs by title and content
+const searchBlogPost = async (req: Request, res: Response): Promise<any> => {
+  try {
+    const searchQuery = req.query.search;
+
+    const getSearchData = await prisma.$queryRaw`
+      SELECT 
+      blogs.id AS id,
+      blogs.title,
+      blogs.content,
+      GROUP_CONCAT(tags.tag_name) AS tags
+    FROM blogs
+    LEFT JOIN blog_tags ON blogs.id = blog_tags.blog_id
+    LEFT JOIN tags ON blog_tags.tag_id = tags.id
+    WHERE blogs.title LIKE ${"%" + searchQuery + "%"} 
+    OR blogs.content LIKE ${"%" + searchQuery + "%"}
+    GROUP BY blogs.id
+    `;
+
+    return res.status(200).json({
+      status: "success",
+      data: getSearchData,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      status: "error",
+      message: "Error fetching blog",
+    });
+  }
+};
+
+//get blogs by tag
+const getBlogsByTag = async (req: Request, res: Response): Promise<any> => {
+  try {
+    const tagId = req.params.id;
+
+    const getBlogs: BlogFetchModel[] = await prisma.$queryRaw`
+    SELECT
+      blogs.id AS id,
+      blogs.title,
+      blogs.content,
+      GROUP_CONCAT(tags.tag_name) AS tags
+      FROM blogs
+      LEFT JOIN blog_tags ON blogs.id = blog_tags.blog_id
+      LEFT JOIN tags ON blog_tags.tag_id = tags.id
+      WHERE tags.id = ${tagId}
+      GROUP BY blogs.id
+    `;
+
+    return res.status(200).json({
+      status: "success",
+      data: getBlogs,
+    });
+  } catch (error) {
+    console.log(error);
+
+    return res.status(500).json({
+      status: "error",
+      message: "Error fetching blog",
+    });
+  }
+};
+
 export default {
   createBlog,
   getAllBlogs,
@@ -259,4 +376,6 @@ export default {
   deleteBlog,
   currentUserBlogs,
   updateBlog,
+  searchBlogPost,
+  getBlogsByTag,
 };

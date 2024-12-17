@@ -22,4 +22,8 @@ router.get("/current/user", VerifyJwt, blogsService.currentUserBlogs);
 
 router.put("/:id", VerifyJwt, blogsService.updateBlog);
 
+router.get("/", VerifyJwt, blogsService.searchBlogPost);
+
+router.get("/tag/:id", VerifyJwt, blogsService.getBlogsByTag);
+
 export default router;
