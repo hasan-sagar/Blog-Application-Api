@@ -209,10 +209,54 @@ const currentUserBlogs = async (req: Request, res: Response): Promise<any> => {
   }
 };
 
+//update blog
+
+const updateBlog = async (req: Request, res: Response): Promise<any> => {
+  try {
+    const id = req.params.id;
+    const { title, content } = req.body;
+    const userId = req.userId;
+
+    const findBlog: BlogModel[] = await prisma.$queryRaw`
+    SELECT * FROM blogs WHERE id=${id}
+  `;
+
+    if (findBlog.length === 0) {
+      return res.status(404).json({
+        status: "error",
+        message: "Blog not found",
+      });
+    }
+    if (findBlog[0].user_id !== userId) {
+      return res.status(403).json({
+        status: "error",
+        message: "Forbidden access",
+      });
+    }
+
+    await prisma.$queryRaw`
+      UPDATE blogs 
+      SET title=${title} , content=${content}
+      WHERE blogs.id=${id}
+    `;
+
+    return res.status(200).json({
+      status: "success",
+      message: "Blog updated successfully",
+    });
+  } catch (error) {
+    return res.status(500).json({
+      status: "error",
+      message: "Error updating blog",
+    });
+  }
+};
+
 export default {
   createBlog,
   getAllBlogs,
   getSingleBlog,
   deleteBlog,
   currentUserBlogs,
+  updateBlog,
 };

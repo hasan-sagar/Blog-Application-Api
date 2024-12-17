@@ -20,4 +20,6 @@ router.delete("/:id", VerifyJwt, blogsService.deleteBlog);
 
 router.get("/current/user", VerifyJwt, blogsService.currentUserBlogs);
 
+router.put("/:id", VerifyJwt, blogsService.updateBlog);
+
 export default router;
