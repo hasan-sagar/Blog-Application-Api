@@ -1,0 +1,46 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model user {
+  id         Int      @id @default(autoincrement())
+  name       String   @db.VarChar(50)
+  email      String   @unique(map: "email") @db.VarChar(100)
+  password   String   @db.VarChar(60)
+  created_at DateTime @default(now()) @db.Timestamp(0)
+  blogs      blogs[]
+}
+
+model blogs {
+  id         Int         @id @default(autoincrement())
+  title      String      @db.VarChar(255)
+  content    String      @db.Text
+  user_id    Int
+  created_at DateTime    @default(now()) @db.Timestamp(0)
+  blog_tags  blog_tags[]
+  user       user        @relation(fields: [user_id], references: [id], onUpdate: Restrict, map: "blogs_ibfk_1")
+
+  @@index([user_id], map: "user_id")
+}
+
+model blog_tags {
+  blog_id Int
+  tag_id  Int
+  blogs   blogs @relation(fields: [blog_id], references: [id], onUpdate: Restrict, map: "blog_tags_ibfk_1")
+  tags    tags  @relation(fields: [tag_id], references: [id], onUpdate: Restrict, map: "blog_tags_ibfk_2")
+
+  @@id([blog_id, tag_id])
+  @@index([tag_id], map: "tag_id")
+}
+
+model tags {
+  id         Int         @id @default(autoincrement())
+  tag_name   String      @db.VarChar(255)
+  created_at DateTime    @default(now()) @db.Timestamp(0)
+  blog_tags  blog_tags[]
+}
