@@ -16,7 +16,7 @@ CREATE TABLE tags (
 CREATE TABLE blog_tags (
     blog_id INTEGER NOT NULL,
     tag_id INTEGER NOT NULL,
-    FOREIGN KEY(blog_id) REFERENCES blog(id),
+    FOREIGN KEY(blog_id) REFERENCES blogs(id) ON DELETE CASCADE,
     FOREIGN KEY(tag_id) REFERENCES tags(id),
     PRIMARY KEY(blog_id, tag_id)
 );

@@ -136,4 +136,36 @@ const getSingleBlog = async (req: Request, res: Response): Promise<any> => {
   }
 };
 
-export default { createBlog, getAllBlogs, getSingleBlog };
+//delete blog
+const deleteBlog = async (req: Request, res: Response): Promise<any> => {
+  try {
+    const blogId = req.params.id;
+    const userId = req.userId;
+
+    const findBlog: BlogModel[] = await prisma.$queryRaw`
+      SELECT * FROM blogs WHERE id=${blogId}
+    `;
+
+    if (findBlog.length > 0) {
+      await prisma.$queryRaw`
+      DELETE FROM blogs WHERE blogs.id=${blogId} AND blogs.user_id=${userId}
+    `;
+      return res.status(200).json({
+        status: "success",
+        message: "Blog deleted success",
+      });
+    } else {
+      return res.status(404).json({
+        status: "error",
+        message: "Blog not found",
+      });
+    }
+  } catch (error) {
+    return res.status(500).json({
+      status: "error",
+      message: "Error deleting blog",
+    });
+  }
+};
+
+export default { createBlog, getAllBlogs, getSingleBlog, deleteBlog };
