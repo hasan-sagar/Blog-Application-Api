@@ -1,4 +1,4 @@
 export class TagsModel {
   id?: number;
-  tag_name: any;
+  tag_name?: any;
 }

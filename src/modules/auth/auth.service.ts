@@ -98,7 +98,7 @@ const userLogin = async (req: Request, res: Response): Promise<any> => {
     //sign jwt
     const payload = {
       userId: existingUser[0].id as number,
-      email: existingUser[0].email,
+      email: existingUser[0].email as string,
     };
 
     const jwtSecretKey = process.env.JWT_SECRET_KEY as string;
