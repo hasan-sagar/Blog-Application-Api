@@ -117,17 +117,23 @@ const getSingleBlog = async (req: Request, res: Response): Promise<any> => {
     WHERE blogs.id = ${id}
     `;
 
-    const blogData = getBlog.map((blog: BlogFetchModel) => ({
-      id: blog.id,
-      title: blog.title,
-      content: blog.content,
-      tags: blog.tags ? blog.tags.split(",") : [],
-    }));
-
-    return res.status(200).json({
-      status: "success",
-      data: blogData,
-    });
+    if (getBlog[0].id === null) {
+      return res.status(404).json({
+        status: "error",
+        message: "No blog found",
+      });
+    } else {
+      const blogData = getBlog.map((blog: BlogFetchModel) => ({
+        id: blog.id,
+        title: blog.title,
+        content: blog.content,
+        tags: blog.tags ? blog.tags.split(",") : [],
+      }));
+      return res.status(200).json({
+        status: "success",
+        data: blogData,
+      });
+    }
   } catch (error) {
     return res.status(500).json({
       status: "error",
@@ -168,4 +174,45 @@ const deleteBlog = async (req: Request, res: Response): Promise<any> => {
   }
 };
 
-export default { createBlog, getAllBlogs, getSingleBlog, deleteBlog };
+//user's blog show
+const currentUserBlogs = async (req: Request, res: Response): Promise<any> => {
+  try {
+    const userId = req.userId;
+    const getBlogs: BlogFetchModel[] = await prisma.$queryRaw`
+    SELECT
+      blogs.id AS id,
+      blogs.title,
+      blogs.content,
+      GROUP_CONCAT(tags.tag_name) AS tags
+    FROM blogs
+    LEFT JOIN blog_tags ON blogs.id = blog_tags.blog_id
+    LEFT JOIN tags ON blog_tags.tag_id = tags.id
+    WHERE blogs.user_id=${userId}
+    GROUP BY blogs.id`;
+
+    const blogData = getBlogs.map((blog: BlogFetchModel) => ({
+      id: blog.id,
+      title: blog.title,
+      content: blog.content,
+      tags: blog.tags ? blog.tags.split(",") : [],
+    }));
+
+    return res.status(200).json({
+      status: "success",
+      data: blogData,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      status: "error",
+      message: "Error fetching blog",
+    });
+  }
+};
+
+export default {
+  createBlog,
+  getAllBlogs,
+  getSingleBlog,
+  deleteBlog,
+  currentUserBlogs,
+};

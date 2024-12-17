@@ -18,4 +18,6 @@ router.get("/:id", VerifyJwt, blogsService.getSingleBlog);
 
 router.delete("/:id", VerifyJwt, blogsService.deleteBlog);
 
+router.get("/current/user", VerifyJwt, blogsService.currentUserBlogs);
+
 export default router;
