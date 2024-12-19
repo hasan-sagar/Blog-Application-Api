@@ -104,6 +104,7 @@ const createBlog = async (req: Request, res: Response): Promise<any> => {
 // get all blogs
 const getAllBlogs = async (req: Request, res: Response): Promise<any> => {
   try {
+    //blogapi.com/api?page=2&pageSize=10
     const page: number = parseInt(req.query.page as string) || 1;
     const pageSize: number = parseInt(req.query.pageSize as string) || 10;
     const offset: number = (page - 1) * pageSize;

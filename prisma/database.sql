@@ -20,3 +20,12 @@ CREATE TABLE blog_tags (
     FOREIGN KEY(tag_id) REFERENCES tags(id),
     PRIMARY KEY(blog_id, tag_id)
 );
+
+CREATE TABLE likes(
+	user_id INTEGER NOT NULL, 
+	blog_id INTEGER NOT NULL,
+	created_at TIMESTAMP DEFAULT NOW(),
+	FOREIGN KEY(user_id) REFERENCES USER(id),
+	FOREIGN KEY(blog_id) REFERENCES blogs(id) ON DELETE CASCADE,
+	PRIMARY KEY(user_id,blog_id)
+)
