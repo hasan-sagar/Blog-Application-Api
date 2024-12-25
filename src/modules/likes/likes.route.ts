@@ -1,9 +1,26 @@
 import express from "express";
 import likesService from "./likes.service";
 import { VerifyJwt } from "../../middlewares/jwt-token";
+import {
+  createLikeValidation,
+  unlikeBlogValidation,
+} from "../../middlewares/handleValidation";
 const router = express.Router();
 
-router.post("/create", VerifyJwt, likesService.createLike);
-router.delete("/unlike", VerifyJwt, likesService.unlikeBlog);
+router.post(
+  "/create",
+  createLikeValidation,
+  VerifyJwt,
+  likesService.createLike
+);
+
+router.delete(
+  "/unlike",
+  unlikeBlogValidation,
+  VerifyJwt,
+  likesService.unlikeBlog
+);
+
+router.get("/blog/:id", VerifyJwt, likesService.getBlogLikes);
 
 export default router;

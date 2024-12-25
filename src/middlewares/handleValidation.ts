@@ -90,3 +90,30 @@ export const createBlogValidation = [
     .withMessage("Tags required"),
   handleValidationError,
 ] as any;
+
+export const createLikeValidation = [
+  body("blogId")
+    .isNumeric()
+    .withMessage("Blog Id must be a number")
+    .notEmpty()
+    .withMessage("Blog Id is required"),
+  handleValidationError,
+] as any;
+
+export const unlikeBlogValidation = [
+  body("blogId")
+    .isNumeric()
+    .withMessage("Blog Id must be a number")
+    .notEmpty()
+    .withMessage("Blog Id is required"),
+  handleValidationError,
+] as any;
+
+export const getBlogsLikesValidation = [
+  param("id")
+    .isNumeric()
+    .withMessage("Id must be a number")
+    .notEmpty()
+    .withMessage("Id is required"),
+  handleValidationError,
+] as any;
