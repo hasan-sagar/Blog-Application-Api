@@ -86,8 +86,34 @@ const getBlogLikes = async (req: Request, res: Response): Promise<any> => {
 };
 
 //get a user's liked blogs
-const getUsersLikedBlogs = async (req: Request, res: Response) => {
+const getUsersLikedBlogs = async (
+  req: Request,
+  res: Response
+): Promise<any> => {
   try {
+    const userId = req.userId;
+
+    if (!userId) {
+      return res.status(400).json({
+        status: "error",
+        message: "Invalid request data",
+      });
+    }
+
+    const getUsersBlogs = await prisma.$queryRaw`
+      SELECT blogs.id,blogs.title,blogs.content,
+      GROUP_CONCAT(tags.tag_name) AS tags,
+      user.name
+      FROM blogs 
+      LEFT JOIN likes ON likes.blog_id = blogs.id
+      LEFT JOIN blog_tags ON blogs.id = blog_tags.blog_id
+      LEFT JOIN tags ON blog_tags.tag_id = tags.id
+      LEFT JOIN USER ON user.id=blogs.user_id
+      WHERE likes.user_id=${userId}
+      GROUP BY blogs.id
+    `;
+
+    return res.status(200).json({ status: "success", data: getUsersBlogs });
   } catch (error) {
     return res.status(500).json({
       status: "error",

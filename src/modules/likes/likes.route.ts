@@ -23,4 +23,6 @@ router.delete(
 
 router.get("/blog/:id", VerifyJwt, likesService.getBlogLikes);
 
+router.get("/user/blog", VerifyJwt, likesService.getUsersLikedBlogs);
+
 export default router;
