@@ -8,10 +8,10 @@ const prisma = new PrismaClient();
 //get current loggedin user profile
 const getLoggedInUser = async (req: Request, res: Response): Promise<any> => {
   try {
-    const validEmail = req.userEmail;
+    const validId = req.userId;
 
     const user: UserModel[] =
-      await prisma.$queryRaw`SELECT id,email,password,created_at FROM user WHERE email = ${validEmail}`;
+      await prisma.$queryRaw`SELECT id,email,password,created_at FROM user WHERE id = ${validId}`;
 
     if (!user) {
       return res.status(404).json({
@@ -25,6 +25,8 @@ const getLoggedInUser = async (req: Request, res: Response): Promise<any> => {
       data: user,
     });
   } catch (error) {
+    console.log(error);
+
     return res.status(500).json({
       status: "error",
       message: "Invalid user",
