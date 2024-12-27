@@ -170,6 +170,8 @@ const getSingleBlog = async (req: Request, res: Response): Promise<any> => {
     LEFT JOIN blog_tags ON blogs.id = blog_tags.blog_id
     LEFT JOIN tags ON blog_tags.tag_id = tags.id
     WHERE blogs.id = ${id}
+    GROUP BY blogs.id,blogs.title,
+    blogs.content
     `;
 
     if (getBlog[0].id === null) {
@@ -190,6 +192,7 @@ const getSingleBlog = async (req: Request, res: Response): Promise<any> => {
       });
     }
   } catch (error) {
+    console.log(error);
     return res.status(500).json({
       status: "error",
       message: "Error fetching blog",
@@ -300,6 +303,7 @@ const updateBlog = async (req: Request, res: Response): Promise<any> => {
       message: "Blog updated successfully",
     });
   } catch (error) {
+    console.log(error);
     return res.status(500).json({
       status: "error",
       message: "Error updating blog",

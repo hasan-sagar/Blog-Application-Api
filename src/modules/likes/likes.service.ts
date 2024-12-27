@@ -108,13 +108,14 @@ const getUsersLikedBlogs = async (
       LEFT JOIN likes ON likes.blog_id = blogs.id
       LEFT JOIN blog_tags ON blogs.id = blog_tags.blog_id
       LEFT JOIN tags ON blog_tags.tag_id = tags.id
-      LEFT JOIN USER ON user.id=blogs.user_id
+      LEFT JOIN user ON user.id=blogs.user_id
       WHERE likes.user_id=${userId}
       GROUP BY blogs.id
     `;
 
     return res.status(200).json({ status: "success", data: getUsersBlogs });
   } catch (error) {
+    console.log(error);
     return res.status(500).json({
       status: "error",
       message: "Error fetching liked blogs",

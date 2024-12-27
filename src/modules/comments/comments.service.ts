@@ -78,7 +78,7 @@ const showComment = async (req: Request, res: Response): Promise<any> => {
     const comments = await prisma.$queryRaw<CommentModel>`
        SELECT comments.id,comments.comment_text,user.name 
        FROM comments 
-       LEFT JOIN USER ON user.id=comments.user_id
+       LEFT JOIN user ON user.id=comments.user_id
        WHERE blog_id=${blogId}
     `;
     return res.status(201).json({ status: "success", data: comments });
