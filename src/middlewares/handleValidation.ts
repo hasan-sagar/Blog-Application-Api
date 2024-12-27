@@ -117,3 +117,17 @@ export const getBlogsLikesValidation = [
     .withMessage("Id is required"),
   handleValidationError,
 ] as any;
+
+export const createCommentValidation = [
+  body("blogId")
+    .isNumeric()
+    .withMessage("Blog Id must be a number")
+    .notEmpty()
+    .withMessage("Blog Id is required"),
+  body("comment_text")
+    .isString()
+    .withMessage("Comment must be a string")
+    .notEmpty()
+    .withMessage("Comment is required"),
+  handleValidationError,
+] as any;

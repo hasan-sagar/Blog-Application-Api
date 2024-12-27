@@ -29,3 +29,13 @@ CREATE TABLE likes(
 	FOREIGN KEY(blog_id) REFERENCES blogs(id) ON DELETE CASCADE,
 	PRIMARY KEY(user_id,blog_id)
 )
+
+CREATE TABLE comments (
+    id INTEGER AUTO_INCREMENT PRIMARY KEY,
+    comment_text VARCHAR(255) NOT NULL,
+    blog_id INTEGER NOT NULL,
+    user_id INTEGER NOT NULL,
+    created_at TIMESTAMP DEFAULT NOW(),
+    FOREIGN KEY(blog_id) REFERENCES blogs(id),
+    FOREIGN KEY(user_id) REFERENCES USER(id)
+);
