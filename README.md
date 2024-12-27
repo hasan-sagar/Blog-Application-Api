@@ -20,7 +20,10 @@ This repository contains the backend for a blog application, providing robust fe
 - **Node.js**: Backend runtime.  
 - **Express.js**: Web framework for building APIs.  
 - **Prisma**: ORM for database interactions.  
-- **MySQL**: Relational database for data storage.  
+- **MySQL**: Relational database for data storage.
+
+# Postman
+https://documenter.getpostman.com/view/15732846/2sAYJ6CKfm
 
 ## Installation  
 
